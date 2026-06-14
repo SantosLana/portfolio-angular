@@ -83,3 +83,30 @@ src/material-theme.scss
 Lana Santos
 
 GitHub: https://github.com/SantosLana
+
+## ✨ Funcionalidades Implementadas
+
+Na Aula 16, o projeto deixou de possuir apenas uma tela estática e passou a funcionar como uma aplicação SPA (Single Page Application) completa. Foram criados os componentes **Início**, **Sobre**, **Projetos** e **Contato**, organizando o conteúdo em seções independentes e reutilizáveis. Também foi configurado o **Angular Router**, permitindo a navegação entre as páginas sem recarregar o navegador.
+
+Além disso, foi implementada uma barra de navegação utilizando **Angular Material**, proporcionando uma interface moderna e intuitiva para acessar cada seção do portfólio. O componente **Home** recebeu um cartão de apresentação com **MatCard**, melhorando a organização visual e a experiência do usuário.
+
+### Recursos adicionados nesta etapa
+
+* Criação dos componentes:
+
+  * Home (Início)
+  * Sobre
+  * Projetos
+  * Contato
+
+* Configuração de rotas com Angular Router.
+
+* Navegação dinâmica entre páginas sem recarregamento da aplicação.
+
+* Implementação de menu de navegação com Angular Material.
+
+* Utilização de `routerLink` e `routerLinkActive` para navegação e destaque da página atual.
+
+* Estruturação do projeto seguindo a arquitetura baseada em componentes standalone do Angular.
+
+* Criação da página inicial com apresentação pessoal utilizando o componente `MatCard`.

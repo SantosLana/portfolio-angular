@@ -1,0 +1,39 @@
+<mat-card class="contato-card">
+  <mat-card-header>
+    <mat-card-title>Entre em Contato 💌</mat-card-title>
+    <mat-card-subtitle>
+      Envie uma mensagem para mim.
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+
+    <form>
+
+      <mat-form-field appearance="outline" class="campo">
+        <mat-label>Nome</mat-label>
+        <input matInput placeholder="Digite seu nome">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="campo">
+        <mat-label>E-mail</mat-label>
+        <input matInput type="email" placeholder="Digite seu e-mail">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="campo">
+        <mat-label>Mensagem</mat-label>
+        <textarea
+          matInput
+          rows="5"
+          placeholder="Digite sua mensagem">
+        </textarea>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary">
+        Enviar
+      </button>
+
+    </form>
+
+  </mat-card-content>
+</mat-card>

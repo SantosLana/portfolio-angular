@@ -1,61 +1,89 @@
-<h1>{{ title() }}</h1>
+<mat-sidenav-container class="container">
 
-<section>
-  <h2>👩‍💻 Sobre Mim</h2>
+  <mat-sidenav #menu mode="over">
 
-  <p>
-    Me chamo Lana Santos, estudante do Instituto Federal do Paraná (IFPR - CRPG),
-    cursando Técnico em Informática. Tenho interesse em tecnologia, desenvolvimento
-    web e também pretendo cursar Direito na UEPG.
-  </p>
+    <h3>Meu Portfólio</h3>
 
-  <p>
-    Este portfólio foi desenvolvido em Angular para apresentar meus projetos,
-    habilidades e trajetória acadêmica.
-  </p>
-</section>
+    <a mat-button
+       routerLink="/"
+       routerLinkActive="ativo"
+       [routerLinkActiveOptions]="{ exact: true }"
+       (click)="menu.close()">
+      Início
+    </a>
 
-<hr>
+    <a mat-button
+       routerLink="/sobre"
+       routerLinkActive="ativo"
+       (click)="menu.close()">
+      Sobre
+    </a>
 
-<section>
-  <h2>📂 Projetos</h2>
+    <a mat-button
+       routerLink="/projetos"
+       routerLinkActive="ativo"
+       (click)="menu.close()">
+      Projetos
+    </a>
 
-  <article>
-    <h3>Sistema de Login com PHP</h3>
-    <p>
-      Sistema de Login com os campos usuário e senha, garantindo segurança na página.
-    </p>
-  </article>
+    <a mat-button
+       routerLink="/contato"
+       routerLinkActive="ativo"
+       (click)="menu.close()">
+      Contato
+    </a>
 
-  <article>
-    <h3>Formulário de Contato</h3>
-    <p>
-      Sistema para contato, com os campos: Nome, E-mail e Mensagem.
-    </p>
-  </article>
+  </mat-sidenav>
 
-  <article>
-    <h3>Painel Administrativo</h3>
-    <p>
-      Sistema de gerenciamento e cadastro de projetos, com os campos: Nome, Descrição, Tecnologias, Link GitHub, Ano e Status, que ficam salvos na aba "Projetos".
-    </p>
-  </article>
+  <mat-sidenav-content>
 
-    <article>
-    <h3>Portfólio Angular</h3>
-    <p>
-      Site pessoal desenvolvido com Angular para apresentar informações
-      profissionais e projetos acadêmicos.
-    </p>
-  </article>
+    <mat-toolbar>
 
-</section>
+      <button mat-icon-button (click)="menu.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
 
-<hr>
+      <span>Meu Portfólio</span>
 
-<section>
-  <h2>📞 Contato</h2>
+      <span class="espacador"></span>
 
-  <p><strong>Email:</strong> 20241ctb0100039@estudantes.ifpr.edu.br</p>
-</section>
+      <!-- Menu desktop -->
+      <div class="menu-desktop">
+
+        <a mat-button
+           routerLink="/"
+           routerLinkActive="ativo"
+           [routerLinkActiveOptions]="{ exact: true }">
+          Início
+        </a>
+
+        <a mat-button
+           routerLink="/sobre"
+           routerLinkActive="ativo">
+          Sobre
+        </a>
+
+        <a mat-button
+           routerLink="/projetos"
+           routerLinkActive="ativo">
+          Projetos
+        </a>
+
+        <a mat-button
+           routerLink="/contato"
+           routerLinkActive="ativo">
+          Contato
+        </a>
+
+      </div>
+
+    </mat-toolbar>
+
+    <main class="conteudo">
+      <router-outlet></router-outlet>
+    </main>
+
+  </mat-sidenav-content>
+
+</mat-sidenav-container>
 

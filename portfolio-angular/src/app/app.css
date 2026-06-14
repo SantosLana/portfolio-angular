@@ -77,6 +77,13 @@ strong {
   color: #c2185b;
 }
 
+a.ativo {
+  background-color: #fbcfe8;
+  color: black ;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
 
 @media (max-width: 768px) {
   body {
@@ -90,4 +97,63 @@ strong {
   section {
     padding: 20px;
   }
+}
+
+.espacador { flex: 1 1 auto; }
+
+.container {
+  height: 100vh;
+}
+
+mat-sidenav {
+  width: 250px;
+  background-color: #fff0f6;
+  color: #c2185b;
+}
+
+mat-sidenav h3 {
+  text-align: center;
+  color: #c2185b;
+  margin: 20px 0;
+}
+
+mat-sidenav a {
+  display: block;
+  margin: 10px;
+  color: #d63384;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+mat-sidenav a:hover {
+  background-color: #ffd6e7;
+  border-radius: 8px;
+}
+
+mat-sidenav a.ativo {
+  background-color: #d63384;
+  color: white !important;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.menu-desktop {
+  display: flex;
+}
+
+button[mat-icon-button] {
+  display: none;
+}
+
+/* Celular */
+@media (max-width: 768px) {
+
+  .menu-desktop {
+    display: none;
+  }
+
+  button[mat-icon-button] {
+    display: inline-flex;
+  }
+
 }
