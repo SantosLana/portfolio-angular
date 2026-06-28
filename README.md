@@ -184,3 +184,58 @@ SELECT id, nome, ano, status FROM projetos;
 
 **Subir o servidor e testar no navegador**
 /usr/bin/php -S 0.0.0.0:8000
+
+## Justificativa: uso de Services para acesso aos dados - Aula 18
+
+Neste projeto, o acesso aos dados da API foi implementado nos **Services** (`ProjetoService` e `TecnologiaService`), enquanto os componentes ficaram responsáveis apenas por exibir as informações na tela.
+
+Essa separação segue uma boa prática do Angular, conhecida como **separação de responsabilidades**. Dessa forma:
+
+* Os componentes ficam responsáveis pela interface e pela interação com o usuário.
+* Os services concentram toda a lógica de comunicação com a API, utilizando o `HttpClient`.
+* Caso a URL da API ou a forma de acesso aos dados precise ser alterada, a mudança é feita apenas no service, sem necessidade de modificar os componentes.
+* O código torna-se mais organizado, reutilizável e de fácil manutenção, já que diferentes componentes podem utilizar o mesmo service.
+
+Por esses motivos, o acesso aos dados foi implementado nos services, mantendo os componentes mais simples e focados apenas na apresentação das informações.
+
+## 🎯 Autoavaliação
+
+**Conceito pretendido: [ A ]
+
+### Justificativa (cite o arquivo de cada critério)
+
+* **Consumo da API (Projetos):**
+
+  * `projeto.service.ts`: implementação do `HttpClient` e método `listar()` utilizando `GET`.
+  * `projetos.ts`: consumo da API através de `this.service.listar().subscribe(...)`.
+  * `projetos.html`: exibição dos dados retornados pela API.
+
+* **Consumo da API (Catálogo/Tecnologias):**
+
+  * `tecnologia.service.ts`: implementação do `HttpClient` e método `listar()` utilizando `GET`.
+  * `catalogo.ts`: consumo da API através de `this.service.listar().subscribe(...)`.
+  * `catalogo.html`: exibição das tecnologias retornadas pela API.
+
+* **Botão "Ver no GitHub":**
+
+  * `projetos.html`: utilização de **Property Binding** com `[href]="p.link_github"` para abrir o repositório do projeto em uma nova aba, exibindo o botão apenas quando o link existe.
+
+* **Tratamento de erro:**
+
+  * `projetos.ts`: tratamento do erro na requisição com `error` no `subscribe`, exibindo uma mensagem ao usuário.
+  * `catalogo.ts`: tratamento do erro na requisição com `error` no `subscribe`, exibindo uma mensagem ao usuário.
+  * `projetos.html` e `catalogo.html`: exibição da mensagem de erro quando necessário.
+
+* **Boas práticas:**
+
+  * O acesso aos dados e às URLs da API foi centralizado nos arquivos `projeto.service.ts` e `tecnologia.service.ts`.
+  * Os componentes (`projetos.ts` e `catalogo.ts`) ficaram responsáveis apenas pela lógica de apresentação e atualização da interface, seguindo a separação de responsabilidades recomendada pelo Angular.
+
+* **Iniciativa própria (conceito A):**
+
+  * O README contém uma seção justificando por que o acesso aos dados foi implementado nos **services**, e não diretamente nos componentes, explicando os benefícios de organização, reutilização de código, manutenção e separação de responsabilidades.
+
+* **Autoavaliação:**
+
+  * Esta seção foi incluída no `README.md`, indicando o conceito pretendido e justificando onde cada requisito foi atendido no projeto.
+
