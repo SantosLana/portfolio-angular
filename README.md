@@ -200,7 +200,7 @@ Por esses motivos, o acesso aos dados foi implementado nos services, mantendo os
 
 ## 🎯 Autoavaliação
 
-**Conceito pretendido: [ A ]
+**Conceito pretendido: [ A ]**
 
 ### Justificativa (cite o arquivo de cada critério)
 
