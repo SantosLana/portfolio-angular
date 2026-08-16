@@ -1,22 +1,50 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-
+import { Component, inject } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ContatoService } from '../contato.service';
 @Component({
   selector: 'app-contato',
-  imports: [
-    FormsModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule
-  ],
+  standalone: true,
+  imports: [ReactiveFormsModule],  
   templateUrl: './contato.html',
-  styleUrl: './contato.css'
 })
 export class Contato {
+  private fb = inject(FormBuilder);
+  private service = inject(ContatoService);
+  enviando = false; sucesso = ''; erro = ''; 
 
+  form = this.fb.group({
+    nome: ['', [Validators.required, Validators.minLength(3)]],
+    email: ['', [Validators.required, Validators.email]],
+    mensagem: ['', [Validators.required, Validators.minLength(10)]],
+  });
+
+  onSubmit() {
+  this.sucesso = '';
+  this.erro = '';
+
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    return;
+  }
+
+  this.enviando = true;
+
+  const dados = this.form.getRawValue();
+
+  this.service.enviar({
+    nome: dados.nome!,
+    email: dados.email!,
+    mensagem: dados.mensagem!,
+  }).subscribe({
+    next: (resp) => {
+      this.sucesso = resp.mensagem;
+      this.form.reset();
+      this.enviando = false;
+    },
+    error: () => {
+      this.erro = 'Nao foi possivel enviar. Tente novamente.';
+      this.enviando = false;
+    },
+  });
+}
 }
