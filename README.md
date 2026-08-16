@@ -239,3 +239,12 @@ Por esses motivos, o acesso aos dados foi implementado nos services, mantendo os
 
   * Esta seção foi incluída no `README.md`, indicando o conceito pretendido e justificando onde cada requisito foi atendido no projeto.
 
+
+## 🎯 Autoavaliação
+Conceito pretendido: [ A / B / C / D ]
+Justificativa (cite o arquivo/linha de cada criterio):
+- Form reativo + erro por campo: contato.html (mensagens com touched) + contato.ts (Validators)
+- POST via service + tratamento: contato.service.ts (http.post) + contato.ts (subscribe next/error)
+- Endpoint PHP (php://input, validacao, prepared, 201/400): api/contato.php
+- Estados/robustez/UX (DUA): contato.html (labels for/id, sem cor unica) + contato.ts (estado enviando)
+- Autoavaliacao: esta secao do README
