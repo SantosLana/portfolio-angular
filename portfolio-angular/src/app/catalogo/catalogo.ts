@@ -9,7 +9,6 @@ import { TecnologiaService, Tecnologia } from '../tecnologia.service';
 })
 export class Catalogo implements OnInit {
   private service = inject(TecnologiaService);
-
   tecnologias: Tecnologia[] = [];
   carregando = true;
   erro = '';
