@@ -240,11 +240,47 @@ Por esses motivos, o acesso aos dados foi implementado nos services, mantendo os
   * Esta seção foi incluída no `README.md`, indicando o conceito pretendido e justificando onde cada requisito foi atendido no projeto.
 
 
+
+**Por que o acesso a dados vive no service, não no componente?**
+
+O acesso aos dados foi centralizado nos services para separar a responsabilidade de comunicação com a API da responsabilidade de apresentação dos componentes. Dessa forma, os componentes ficam responsáveis pela interface e os services pela obtenção dos dados, facilitando manutenção, reutilização e testes.
+
+
 ## 🎯 Autoavaliação
-Conceito pretendido: [ A / B / C / D ]
-Justificativa (cite o arquivo/linha de cada criterio):
-- Form reativo + erro por campo: contato.html (mensagens com touched) + contato.ts (Validators)
-- POST via service + tratamento: contato.service.ts (http.post) + contato.ts (subscribe next/error)
-- Endpoint PHP (php://input, validacao, prepared, 201/400): api/contato.php
-- Estados/robustez/UX (DUA): contato.html (labels for/id, sem cor unica) + contato.ts (estado enviando)
-- Autoavaliacao: esta secao do README
+Conceito pretendido: [ A ]
+Escolhi o Nível A — Excelente, pois implementei os requisitos dos níveis C e B e também acrescentei uma iniciativa própria, justificando no README a decisão de manter o acesso aos dados nos services, em vez de realizar as requisições diretamente nos componentes.
+Como iniciativa própria, escolhi a opção de justificar no README por que o acesso aos dados vive nos services, e não nos componentes.
+
+- Por que o acesso aos dados fica nos services?
+
+- Decidi manter as requisições à API nos services porque essa organização separa melhor as responsabilidades da aplicação.
+
+- Os services ficam responsáveis pela comunicação com a API e pelo acesso aos dados. Por exemplo, o ProjetoService concentra a URL da API e a chamada HTTP para buscar os projetos:
+
+- private url = '.../api/projetos.php';
+
+listar(): Observable<Projeto[]> {
+  return this.http.get<Projeto[]>(this.url).pipe(
+    catchError(() => {
+      console.error('Falha ao carregar os projetos.');
+      return of([]);
+    })
+  );
+}
+
+- Da mesma forma, o TecnologiaService concentra o acesso à API de tecnologias.
+
+- Os componentes, por outro lado, ficam responsáveis principalmente pela apresentação dos dados e pelo comportamento da interface, como controlar os estados de carregamento e erro e disponibilizar os dados para os templates.
+
+- Essa separação traz algumas vantagens:
+
+- Organização: cada parte da aplicação possui uma responsabilidade específica.
+Reutilização: diferentes componentes podem utilizar o mesmo service para acessar os dados.
+Manutenção: se a URL ou a forma de acesso à API mudar, a alteração pode ser feita no service sem precisar modificar todos os componentes.
+Separação de responsabilidades: o componente não precisa conhecer detalhes de comunicação com a API.
+Facilidade de evolução: a aplicação fica mais preparada para receber novas telas ou funcionalidades que utilizem os mesmos dados.
+
+- Portanto, escolhi essa estrutura para evitar que a lógica de acesso aos dados fique espalhada pelos componentes e para deixar o código mais organizado, reutilizável e fácil de manter.
+
+
+
