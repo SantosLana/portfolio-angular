@@ -36,7 +36,7 @@ if (!empty($erros)) {
 }
 
 
-require __DIR__ . '/conexao.php';     
+require __DIR__ . '/../conexao.php';     
 $sql = 'INSERT INTO contatos (nome, email, mensagem)
         VALUES (:nome, :email, :mensagem)';
 $stmt = $pdo->prepare($sql);

@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ContatoService } from '../contato.service';
+import { ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'app-contato',
   standalone: true,
@@ -10,6 +11,7 @@ import { ContatoService } from '../contato.service';
 export class Contato {
   private fb = inject(FormBuilder);
   private service = inject(ContatoService);
+  private cdr = inject(ChangeDetectorRef);
   enviando = false; sucesso = ''; erro = ''; 
 
   form = this.fb.group({
@@ -40,10 +42,12 @@ export class Contato {
       this.sucesso = resp.mensagem;
       this.form.reset();
       this.enviando = false;
+      this.cdr.detectChanges();
     },
     error: () => {
       this.erro = 'Nao foi possivel enviar. Tente novamente.';
       this.enviando = false;
+      this.cdr.detectChanges();
     },
   });
 }
