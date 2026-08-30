@@ -40,6 +40,15 @@
       Catalogo
     </a>
 
+    <a mat-button
+       routerLink="/gestao"
+       routerLinkActive="ativo"
+       (click)="menu.close()">
+      Gestão
+    </a>
+
+
+
   </mat-sidenav>
 
   <mat-sidenav-content>
@@ -87,6 +96,14 @@
            routerLinkActive="ativo">
           Catálogo
         </a>
+
+        <a mat-button
+           routerLink="/gestao"
+           routerLinkActive="ativo">
+          Gestão
+        </a>
+
+
 
       </div>
 
