@@ -282,5 +282,8 @@ Facilidade de evolução: a aplicação fica mais preparada para receber novas t
 
 - Portanto, escolhi essa estrutura para evitar que a lógica de acesso aos dados fique espalhada pelos componentes e para deixar o código mais organizado, reutilizável e fácil de manter.
 
+**Por que o mesmo endereço api/projetos.php consegue fazer quatro coisas diferentes?**
 
+A API usa o mesmo endereço para várias funções porque o método da requisição indica qual ação deve ser realizada.
+Dessa forma, GET, POST, PUT e DELETE permitem consultar, cadastrar, modificar ou remover projetos usando a mesma rota.
 
