@@ -287,3 +287,16 @@ Facilidade de evolução: a aplicação fica mais preparada para receber novas t
 A API usa o mesmo endereço para várias funções porque o método da requisição indica qual ação deve ser realizada.
 Dessa forma, GET, POST, PUT e DELETE permitem consultar, cadastrar, modificar ou remover projetos usando a mesma rota.
 
+## 🎯 Autoavaliacao
+
+Conceito pretendido: A
+
+- R1 (API decide pelo verbo): api/projetos.php linhas 28-95
+- R1 (erros 400/404/405 testados): README.md secao "Testes com curl"
+- R2 (tela pelo service, sem http. no componente): portfolio-angular/src/app/gestao/gestao.ts linhas 1-40
+- R2 (campo status no formulario): portfolio-angular/src/app/gestao/gestao.html linhas 22-30
+- R3 (lista atualiza sem F5): portfolio-angular/src/app/gestao/gestao.ts linhas 58-66
+- R4 (justificativa das 2 linhas): README.md secao "Um endereco, quatro acoes"
+- R4 (intercalacao Network): README.md secao "O que a aba Network mostrou"
+- R5 (instrucoes de execucao): README.md secao "Como rodar"
+
