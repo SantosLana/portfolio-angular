@@ -287,16 +287,49 @@ Facilidade de evolução: a aplicação fica mais preparada para receber novas t
 A API usa o mesmo endereço para várias funções porque o método da requisição indica qual ação deve ser realizada.
 Dessa forma, GET, POST, PUT e DELETE permitem consultar, cadastrar, modificar ou remover projetos usando a mesma rota.
 
-## 🎯 Autoavaliacao
+## 🎯 Autoavaliação — Nível A (Excelente)
 
-Conceito pretendido: A
+Declaro como conceito pretendido o **Nível A — Excelente**.
 
-- R1 (API decide pelo verbo): api/projetos.php linhas 28-95
-- R1 (erros 400/404/405 testados): README.md secao "Testes com curl"
-- R2 (tela pelo service, sem http. no componente): portfolio-angular/src/app/gestao/gestao.ts linhas 1-40
-- R2 (campo status no formulario): portfolio-angular/src/app/gestao/gestao.html linhas 22-30
-- R3 (lista atualiza sem F5): portfolio-angular/src/app/gestao/gestao.ts linhas 58-66
-- R4 (justificativa das 2 linhas): README.md secao "Um endereco, quatro acoes"
-- R4 (intercalacao Network): README.md secao "O que a aba Network mostrou"
-- R5 (instrucoes de execucao): README.md secao "Como rodar"
+### Aproveitamento dos erros vindos do back-end
+
+No arquivo `src/app/contato/contato.ts`, o callback `error` do `subscribe` recebe um parâmetro tipado como `HttpErrorResponse`. A implementação verifica `err.error?.erros` e exibe as mensagens retornadas pela API, utilizando uma mensagem genérica apenas como alternativa caso o back-end não envie a lista de erros.
+
+**Arquivo:** `src/app/contato/contato.ts`
+**Trecho:** callback `error` do método `onSubmit()`.
+
+### Acessibilidade e UX (DUA)
+
+No arquivo `src/app/contato/contato.html`, cada campo possui um `<label>` associado ao respectivo controle por meio dos atributos `for` e `id`, facilitando a identificação dos campos por tecnologias assistivas.
+
+Também são exibidas mensagens de erro em texto quando os campos estão inválidos e foram tocados. Dessa forma, a cor não é utilizada como único sinal de erro.
+
+No arquivo `src/app/contato/contato.ts`, quando o formulário é inválido, os campos são marcados como tocados e o foco é direcionado para o primeiro campo inválido, facilitando a correção do formulário.
+
+**Arquivos:**
+
+* `src/app/contato/contato.html`
+* `src/app/contato/contato.ts`
+
+### Estados de envio
+
+O formulário apresenta o estado visual `Enviando...` enquanto a requisição está em andamento e mantém o botão desabilitado durante o envio.
+
+Em caso de sucesso, uma mensagem é exibida, o formulário é resetado e o estado de envio é encerrado.
+
+Em caso de erro, a mensagem retornada pela API é exibida e o botão é reabilitado.
+
+**Arquivo:** `src/app/contato/contato.ts`
+
+### Validação dos campos
+
+O formulário utiliza Reactive Forms e possui validações para nome, e-mail e mensagem, incluindo tamanho mínimo e formato de e-mail.
+
+**Arquivo:** `src/app/contato/contato.ts`
+
+### Conclusão
+
+Considero que o projeto atende ao **Nível A — Excelente**, pois além dos requisitos básicos de validação e envio, possui tratamento dos erros retornados pelo back-end, preocupação com acessibilidade e UX e documentação da implementação no README.
+
+
 

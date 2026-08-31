@@ -2,11 +2,13 @@ import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ContatoService } from '../contato.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-contato',
   standalone: true,
-  imports: [ReactiveFormsModule],  
+  imports: [ReactiveFormsModule],
   templateUrl: './contato.html',
+  styleUrl: './contato.css',
 })
 export class Contato {
   private fb = inject(FormBuilder);
@@ -25,9 +27,16 @@ export class Contato {
   this.erro = '';
 
   if (this.form.invalid) {
-    this.form.markAllAsTouched();
-    return;
-  }
+  this.form.markAllAsTouched();
+
+  const primeiroCampoInvalido = document.querySelector(
+    'input.ng-invalid, textarea.ng-invalid'
+  ) as HTMLElement | null;
+
+  primeiroCampoInvalido?.focus();
+
+  return;
+}
 
   this.enviando = true;
 
@@ -44,11 +53,16 @@ export class Contato {
       this.enviando = false;
       this.cdr.detectChanges();
     },
-    error: () => {
-      this.erro = 'Nao foi possivel enviar. Tente novamente.';
-      this.enviando = false;
-      this.cdr.detectChanges();
-    },
+    error: (err: HttpErrorResponse) => {
+  if (err.error?.erros) {
+    this.erro = err.error.erros.join(' ');
+  } else {
+    this.erro = 'Não foi possível enviar. Tente novamente.';
+  }
+
+  this.enviando = false;
+  this.cdr.detectChanges();
+},
   });
 }
 }
