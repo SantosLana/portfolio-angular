@@ -331,5 +331,38 @@ O formulário utiliza Reactive Forms e possui validações para nome, e-mail e m
 
 Considero que o projeto atende ao **Nível A — Excelente**, pois além dos requisitos básicos de validação e envio, possui tratamento dos erros retornados pelo back-end, preocupação com acessibilidade e UX e documentação da implementação no README.
 
+## Verificação dos erros da API
+
+Para conferir o comportamento da API em situações inválidas, foram realizados testes utilizando curl.
+
+**400 — Cadastro sem informar o nome**
+
+**400 Bad Request**
+**{"erro":"Informe pelo menos o nome do projeto"}**
+
+**400 — Atualização sem informar o ID**
+
+**400 Bad Request**
+**{"erro":"PUT exige o id na URL: ?id=NN"}**
+
+**404 — Exclusão de um projeto inexistente**
+
+**404 Not Found**
+**{"erro":"Projeto nao encontrado"}**
+
+**405 — Utilização de um método não implementado**
+
+**405 Method Not Allowed**
+**{"erro":"Metodo nao permitido"}**
+
+
+## Antecipação — cliques consecutivos no botão de adicionar
+
+Caso o usuário tente clicar várias vezes no botão de Adicionar projeto enquanto o cadastro ainda está sendo processado, existe o risco de mais de um POST ser enviado. Para reduzir essa possibilidade, utilizo a variável salvando, que assume o valor true durante o envio e mantém o botão desativado até a conclusão da operação.
+
+## Comparação — comportamento da lista após as operações
+
+No cadastro ou na edição, após a resposta positiva da API, o método carregar() é executado novamente. Assim, a aplicação consulta o banco outra vez e apresenta a lista atualizada. Na exclusão, a estratégia é diferente: após a confirmação da API, o projeto é retirado diretamente da lista local com filter(), sem precisar fazer uma nova consulta ao servidor.
+
 
 

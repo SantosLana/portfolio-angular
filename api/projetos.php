@@ -1,15 +1,21 @@
 <?php
 
+// api/projetos.php - le, cria, altera e apaga projetos (CRUD completo)
+
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
+// Qualquer erro de PHP ou de banco vira JSON com status 500.
 set_exception_handler(function ($e) {
     http_response_code(500);
-    echo json_encode(['erro' => 'Falha no servidor: ' . $e->getMessage()]);
+    echo json_encode([
+        'erro' => 'Falha no servidor: ' . $e->getMessage()
+    ]);
 });
 
+// Responde ao "pre-voo" do CORS.
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
     exit;
@@ -21,13 +27,29 @@ $metodo = $_SERVER['REQUEST_METHOD'];
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
 
+// =========================
+// GET - listar projetos
+// =========================
 
 if ($metodo === 'GET') {
 
-    $sql = "SELECT id, nome, descricao, tecnologias, link_github, ano
-            FROM projetos
-            WHERE status = 'publicado'
-            ORDER BY ano DESC, id";
+    // ?todos=1 é usado pela tela de gestão.
+    // Sem esse parâmetro, a API mostra somente publicados.
+    $todos = isset($_GET['todos']) && $_GET['todos'] === '1';
+
+    if ($todos) {
+
+        $sql = "SELECT id, nome, descricao, tecnologias, link_github, ano, status
+                FROM projetos
+                ORDER BY ano DESC, id";
+
+    } else {
+
+        $sql = "SELECT id, nome, descricao, tecnologias, link_github, ano, status
+                FROM projetos
+                WHERE status = 'publicado'
+                ORDER BY ano DESC, id";
+    }
 
     $projetos = $pdo->query($sql)->fetchAll();
 
@@ -36,6 +58,9 @@ if ($metodo === 'GET') {
 }
 
 
+// =========================
+// POST - criar projeto
+// =========================
 
 if ($metodo === 'POST') {
 
@@ -43,9 +68,11 @@ if ($metodo === 'POST') {
 
     if (!$dados || empty($dados['nome'])) {
         http_response_code(400);
+
         echo json_encode([
             'erro' => 'Informe pelo menos o nome do projeto'
         ]);
+
         exit;
     }
 
@@ -61,7 +88,7 @@ if ($metodo === 'POST') {
         $dados['tecnologias'] ?? '',
         $dados['link_github'] ?? '',
         $dados['ano'] ?? date('Y'),
-        'publicado',
+        $dados['status'] ?? 'publicado',
     ]);
 
     http_response_code(201);
@@ -74,6 +101,9 @@ if ($metodo === 'POST') {
 }
 
 
+// =========================
+// PUT - alterar projeto
+// =========================
 
 if ($metodo === 'PUT') {
 
@@ -104,7 +134,8 @@ if ($metodo === 'PUT') {
                 descricao = ?,
                 tecnologias = ?,
                 link_github = ?,
-                ano = ?
+                ano = ?,
+                status = ?
             WHERE id = ?';
 
     $stmt = $pdo->prepare($sql);
@@ -115,8 +146,11 @@ if ($metodo === 'PUT') {
         $dados['tecnologias'] ?? '',
         $dados['link_github'] ?? '',
         $dados['ano'] ?? date('Y'),
+        $dados['status'] ?? 'publicado',
         $id,
     ]);
+
+    http_response_code(200);
 
     echo json_encode([
         'mensagem' => 'Projeto atualizado'
@@ -126,7 +160,9 @@ if ($metodo === 'PUT') {
 }
 
 
-
+// =========================
+// DELETE - apagar projeto
+// =========================
 
 if ($metodo === 'DELETE') {
 
@@ -140,14 +176,15 @@ if ($metodo === 'DELETE') {
         exit;
     }
 
-
+    // Apaga o projeto pelo ID.
     $stmt = $pdo->prepare(
         'DELETE FROM projetos WHERE id = ?'
     );
 
     $stmt->execute([$id]);
 
-
+    // Se nenhum registro foi apagado,
+    // significa que o projeto não existe.
     if ($stmt->rowCount() === 0) {
 
         http_response_code(404);
@@ -159,14 +196,19 @@ if ($metodo === 'DELETE') {
         exit;
     }
 
-
+    // Projeto apagado com sucesso.
     http_response_code(204);
 
     exit;
 }
 
 
-
+// =========================
+// Método não permitido
+// =========================
 
 http_response_code(405);
-echo json_encode(['erro' => 'Metodo nao permitido']);
+
+echo json_encode([
+    'erro' => 'Metodo nao permitido'
+]);
