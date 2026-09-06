@@ -364,5 +364,158 @@ Caso o usuário tente clicar várias vezes no botão de Adicionar projeto enquan
 
 No cadastro ou na edição, após a resposta positiva da API, o método carregar() é executado novamente. Assim, a aplicação consulta o banco outra vez e apresenta a lista atualizada. Na exclusão, a estratégia é diferente: após a confirmação da API, o projeto é retirado diretamente da lista local com filter(), sem precisar fazer uma nova consulta ao servidor.
 
+## 🎯 Autoavaliação — Nível A
+
+### ⭐⭐⭐ Nível A — Excelente: aplicação completa e justificativa técnica
+
+Para este portfólio, busquei atender aos requisitos do Nível A, indo além do funcionamento básico do CRUD e acrescentando cuidados relacionados à experiência do usuário, comunicação com a API e justificativas técnicas.
+
+#### 1. Tratamento de erros nas operações
+
+A aplicação apresenta mensagens diretamente na interface quando ocorre algum problema durante a comunicação com a API.
+
+Na tela de projetos, o carregamento possui tratamento de erro em `projetos.ts`, utilizando `subscribe()` com os blocos `next` e `error`. Dessa forma, uma falha na requisição não deixa a página sem informação para o usuário.
+
+Na área de gestão, o mesmo princípio foi aplicado em `gestao.ts`:
+
+* carregamento dos projetos;
+* criação de um projeto;
+* atualização de um projeto;
+* exclusão de um projeto.
+
+As mensagens são armazenadas na propriedade `erro` e exibidas pelo template `gestao.html`, permitindo que o usuário saiba que a operação não foi concluída.
+
+Exemplos de mensagens utilizadas:
+
+* `Não foi possível carregar os projetos.`
+* `Não foi possível salvar o projeto.`
+* `Não foi possível excluir o projeto. Tente de novo.`
+
+Assim, o erro não fica restrito ao console do navegador: ele também é comunicado visualmente na própria tela.
+
+---
+
+#### 2. Estado específico para lista sem projetos
+
+Também foi criado um tratamento para quando a API retorna uma lista vazia.
+
+Em `projetos.html`, quando não existem projetos disponíveis, é apresentada uma mensagem informando essa situação:
+
+```html
+@if (!carregando && projetos.length === 0 && !erro) {
+  <p>Nenhum projeto publicado ainda.</p>
+}
+```
+
+Na tela de gestão, existe um tratamento semelhante:
+
+```html
+@if (!carregando && projetos.length === 0 && !erro) {
+  <p>Nenhum projeto cadastrado ainda.</p>
+}
+```
+
+Essa melhoria evita que o usuário encontre apenas um espaço vazio e fique sem saber se os dados ainda estão carregando, se ocorreu um erro ou se realmente não existem registros.
+
+Como referência para essa melhoria, consultei a documentação oficial do Angular sobre o controle de fluxo nos templates, especialmente a utilização do `@if` para exibir conteúdo de forma condicional.
+
+**Fonte consultada:** documentação oficial do Angular — *Control flow*.
+
+---
+
+#### 3. Verificação do preflight CORS
+
+Antes de considerar a comunicação com a API concluída, também foi realizado o teste de preflight utilizando `OPTIONS`.
+
+Comando executado:
+
+```bash
+curl -i -X OPTIONS https://humble-potato-97vx57v4rggp3jwv-8000.app.github.dev/api/projetos.php
+```
+
+O servidor respondeu:
+
+```text
+HTTP/2 204
+access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
+access-control-allow-origin: *
+access-control-allow-headers: Content-Type
+x-powered-by: PHP/8.3.6
+```
+
+O status `204` confirma que o servidor respondeu ao preflight sem conteúdo, enquanto o cabeçalho `Access-Control-Allow-Methods` informa que a API aceita `GET`, `POST`, `PUT`, `DELETE` e `OPTIONS`.
+
+Essa etapa é importante porque o navegador pode realizar uma requisição `OPTIONS` antes de determinadas operações, como `DELETE`, para verificar se a comunicação entre o frontend e a API está autorizada. Só depois dessa confirmação a requisição principal pode ser realizada.
+
+---
+
+#### 4. Comparação das estratégias de atualização dos dados
+
+Existem duas formas principais de manter a lista sincronizada depois de uma alteração:
+
+1. Fazer uma nova requisição `GET` para buscar novamente os dados da API.
+2. Alterar diretamente a lista que já está armazenada no componente.
+
+Neste projeto, as duas abordagens aparecem em situações diferentes.
+
+Depois de criar ou editar um projeto, o método `salvar()` chama `carregar()`, realizando uma nova consulta à API. Essa opção tem como vantagem garantir que a lista apresentada seja novamente obtida do servidor.
+
+Já na exclusão, após o `DELETE` ser concluído com sucesso, o projeto é retirado diretamente do array local:
+
+```ts
+this.projetos = this.projetos.filter(x => x.id !== p.id);
+```
+
+Essa segunda estratégia economiza **uma viagem à rede**, pois não é necessário executar outro `GET` apenas para atualizar a lista depois da exclusão.
+
+Por outro lado, atualizar somente o estado local pode deixar a tela desatualizada caso outra pessoa altere o banco de dados, outro navegador modifique os registros ou ocorra uma alteração diretamente no banco. Nesse cenário, os dados exibidos permaneceriam diferentes dos dados existentes na API até que uma nova consulta fosse realizada.
+
+---
+
+#### 5. Objeção sobre o uso de `(click)`
+
+Uma possível objeção seria:
+
+> “Usar `(click)` é mais complicado. Um `<a href=".../projetos.php?id=5">Excluir</a>` já faria a exclusão e seria mais simples.”
+
+Minha resposta é que o `<a href>` realiza uma navegação/requisição `GET`, enquanto a exclusão da aplicação utiliza explicitamente o método HTTP `DELETE`. Isso mantém cada operação com sua finalidade correta e permite que o Angular controle a ação antes de enviá-la à API.
+
+No código de `gestao.ts`, o botão chama:
+
+```html
+<button type="button" (click)="excluir(p)">Excluir</button>
+```
+
+e o serviço executa:
+
+```ts
+return this.http.delete<void>(`${this.url}?id=${id}`);
+```
+
+O teste de preflight também comprova que a API está preparada para receber esse método:
+
+```text
+access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
+```
+
+Dessa maneira, o uso do `(click)` não é apenas uma complicação: ele permite executar uma ação controlada pelo Angular e realizar a operação de exclusão utilizando o método HTTP adequado.
+
+---
+
+### ✅ Conclusão
+
+Considero que este projeto atende ao **Nível A**, pois além das funcionalidades de cadastro, edição e exclusão, foram implementados tratamentos visíveis de erro, estado específico para listas vazias, validação da configuração CORS por meio de preflight, comparação das estratégias de atualização dos dados e uma justificativa técnica para o uso de eventos do Angular na exclusão.
+
+As decisões adotadas também foram documentadas para demonstrar não apenas que a aplicação funciona, mas que as escolhas de implementação foram compreendidas e justificadas.
+
+## 🔁 Puxando o que já era seu
+
+* **Método:** `DELETE`
+* **Status:** `204 No Content`
+* **Content-Type:** `application/json; charset=utf-8`
+* **Explicação:** A exclusão retorna `204` porque o recurso foi removido com sucesso e não há conteúdo adicional para retornar na resposta; já a criação utiliza `201` para indicar que um novo recurso foi criado.
+
+
+
 
 

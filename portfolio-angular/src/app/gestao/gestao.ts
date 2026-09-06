@@ -70,7 +70,7 @@ salvar() {
     this.service.excluir(p.id).subscribe({
 
       next: () => { this.projetos = this.projetos.filter(x => x.id !== p.id); },
-      error: () => { this.erro = 'Nao foi possivel excluir. Tente de novo.' }
+      error: () => { this.erro = 'Nao foi possivel excluir. Tente de novo.'; this.cdr.detectChanges(); }
     });
   }
 }
