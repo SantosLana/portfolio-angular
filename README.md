@@ -515,6 +515,21 @@ As decisões adotadas também foram documentadas para demonstrar não apenas que
 * **Content-Type:** `application/json; charset=utf-8`
 * **Explicação:** A exclusão retorna `204` porque o recurso foi removido com sucesso e não há conteúdo adicional para retornar na resposta; já a criação utiliza `201` para indicar que um novo recurso foi criado.
 
+## API em Node (Aula 21)
+
+Uma segunda versão da API, em JavaScript, na pasta `api-node/`.
+O contrato de `GET /api/projetos` é o mesmo do `api/projetos.php`
+
+Como rodar:
+
+    cd api-node
+    npm install
+    node server.js
+
+A API sobe em http://localhost:3000. Teste com:
+
+    curl -i http://localhost:3000/api/projetos
+
 
 
 

@@ -15,7 +15,7 @@ export interface Projeto {
 @Injectable({ providedIn: 'root' })
 export class ProjetoService {
   private http = inject(HttpClient);
-  private url = 'https://humble-potato-97vx57v4rggp3jwv-8000.app.github.dev/api/projetos.php';
+  private url = 'https://humble-potato-97vx57v4rggp3jwv-3000.app.github.dev/api/projetos';
 
   listar(): Observable<Projeto[]> {
     return this.http.get<Projeto[]>(this.url);
