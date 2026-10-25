@@ -555,7 +555,7 @@ A API em uso e a de `api-node/`. Os arquivos `api/*.php` e `conexao.php` ficam n
 
     curl -i -X DELETE http://localhost:3000/api/projetos/18
 
-    ### Aula 24: a tranca
+### Aula 24: a tranca
 
 Quem escreve precisa de um token. Antes do primeiro uso, crie a tabela:
 
@@ -565,12 +565,212 @@ cd api-node
 npm install
 node criar-usuario.js dono@portfolio.dev portfolio2026
 
+## Configurei o token para expirar após uma hora, buscando reduzir o tempo em que ele poderia ser utilizado indevidamente, sem tornar necessário fazer login novamente com muita frequência.
+
+## O `SEGREDO` usado para assinar os tokens JWT não deve ficar fixo no código em produção, pois pode ser exposto no repositório e permitir a falsificação de tokens. Na Aula 29, ele será transferido para uma variável de ambiente no arquivo `.env`, separado do código-fonte. Esse arquivo não deve ser enviado ao GitHub.
+
+## Tabela de Rotas:
+Verbo	         Rota	          Precisa de token?
+POST	      /api/login	              Não
+GET	       /api/projetos	            Não
+GET	     /api/projetos/todos	        Sim
+GET	     /api/projetos/:id	          Não
+POST	    /api/projetos	              Sim
+PUT	    /api/projetos/:id	            Sim
+DELETE	/api/projetos/:id	            Sim
+GET	    /api/tecnologias	            Não
+POST	   /api/tecnologias	            Sim
+PUT	   /api/tecnologias/:id	          Sim
+DELETE	/api/tecnologias/:id	        Sim
+
 Login e escrita com o token:
 
-curl -i -X POST http://localhost:3000/api/login -H "Content-Type: application/json" -d '{"email":"20241ctb0100039@estudantes.ifpr.edu.br","senha":"portfolio2026"}'
+## Login correto
 
-curl -i -X POST http://localhost:3000/api/projetos -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"nome":"Projeto com tranca","ano":2026}'
+curl -i -X POST http://localhost:3000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"SEU_EMAIL","senha":"SUA_SENHA"}'
 
-curl -i -X PUT http://localhost:3000/api/projetos/8 -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"nome":"Projeto atualizado","ano":2026}'
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 215
+ETag: W/"d7-RN5iCwaL3sJaHrqs0ZBe45uyE0s"
+Date: Sun, 25 Oct 2026 18:07:41 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiIyMDI0MWN0YjAxMDAwMjVAZXN0dWRhbnRlcy5pZnByLmVkdS5iciIsImlhdCI6MTc5Mjk1MTY2MSwiZXhwIjoxNzkyOTU4ODYxfQ._In3q2rD25rwNQZeiIydNE1ZXb0kQbUrdmSbxv4Qna8"}
+
+## Login com credenciais inválidas
+
+curl -i -X POST http://localhost:3000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"estudante@gmail.com","senha":"blabla"}'
+
+HTTP/1.1 401 Unauthorized
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 35
+ETag: W/"23-bAJuCsDKy+nub27IZNu4+LWWR98"
+Date: Sun, 25 Oct 2026 19:00:03 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"erro":"Email ou senha invalidos"}
+
+## Listagem pública
+
+curl -i http://localhost:3000/api/projetos
+
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 2147
+ETag: W/"863-XtWcCutuYcePlCa7nQBo57065Kk"
+Date: Sun, 25 Oct 2026 18:20:38 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+[{"id":30,"nome":"Projeto com tranca","descricao":"","tecnologias":"","link_github":"","ano":2026,"status":"publicado"},{"id":28,"nome":"Projeto com tranca","descricao":"","tecnologias":"","link_github":"","ano":2026,"status":"publicado"},{"id":27,"nome":"Projeto com tranca","descricao":"","tecnologias":"","link_github":"","ano":2026,"status":"publicado"},{"id":26,"nome":"Projeto com tranca","descricao":"","tecnologias":"","link_github":"","ano":2026,"status":"publicado"},{"id":25,"nome":"Projeto com tranca","descricao":"","tecnologias":"","link_github":"","ano":2026,"status":"publicado"},{"id":23,"nome":"Projeto teste","descricao":"","tecnologias":"PHP e CSS","link_github":"","ano":2026,"status":"publicado"},{"id":15,"nome":"Sistema de Login com PHP","descricao":"","tecnologias":"PHP, MariaDB e CSS","link_github":"https://github.com/SantosLana/2026-DWII/blob/main/04_sessoes/login.php","ano":2026,"status":"publicado"},{"id":5,"nome":"API de Clima","descricao":"Microsservico que consome uma API publica e devolve a previsao em JSON.","tecnologias":"PHP, REST","link_github":"https://github.com/usuario/clima","ano":2026,"status":"publicado"},{"id":4,"nome":"Loja Virtual (prototipo)","descricao":"Catalogo de produtos com carrinho e checkout simulado.","tecnologias":"PHP, MariaDB, JavaScript","link_github":"https://github.com/usuario/loja","ano":2024,"status":"publicado"},{"id":3,"nome":"App de Tarefas","descricao":"Lista de tarefas com categorias, prazos e filtro por status.","tecnologias":"JavaScript, HTML, CSS","link_github":"https://github.com/usuario/tarefas","ano":2025,"status":"publicado"},{"id":2,"nome":"Sistema de Biblioteca","descricao":"CRUD de acervo e emprestimos, com busca e relatorios.","tecnologias":"PHP, MariaDB, Bootstrap","link_github":"https://github.com/usuario/biblioteca","ano":2025,"status":"publicado"},{"id":1,"nome":"Portfolio Pessoal","descricao":"Site de portfolio responsivo com PHP, PDO e MariaDB, painel admin e login","tecnologias":"PHP, MariaDB, CSS, Git","link_github":"https://github.com/SantosLana/portfolio-angular/tree/main/portfolio-angular","ano":2026,"status":"publicado"}]
+
+## Listagem completa sem token
+
+curl -i http://localhost:3000/api/projetos/todos
+
+HTTP/1.1 401 Unauthorized
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 24
+ETag: W/"18-7rngwg4P6dw1Zp7FDBOgtWmRdJQ"
+Date: Sun, 25 Oct 2026 18:20:47 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"erro":"Token ausente"}
+
+## Listagem completa com token
+
+curl -i http://localhost:3000/api/projetos/todos \
+  -H "Authorization: Bearer $TOKEN"
+
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 2340
+ETag: W/"924-ouNVJp0H873cIP/1D/jyMSNzbPc"
+Date: Sun, 25 Oct 2026 18:20:56 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+[{"id":30,"nome":"Projeto com tranca","descricao":"","tecnologias":"","link_github":"","ano":2026,"status":"publicado"},{"id":28,"nome":"Projeto com tranca","descricao":"","tecnologias":"","link_github":"","ano":2026,"status":"publicado"},{"id":27,"nome":"Projeto com tranca","descricao":"","tecnologias":"","link_github":"","ano":2026,"status":"publicado"},{"id":26,"nome":"Projeto com tranca","descricao":"","tecnologias":"","link_github":"","ano":2026,"status":"publicado"},{"id":25,"nome":"Projeto com tranca","descricao":"","tecnologias":"","link_github":"","ano":2026,"status":"publicado"},{"id":23,"nome":"Projeto teste","descricao":"","tecnologias":"PHP e CSS","link_github":"","ano":2026,"status":"publicado"},{"id":15,"nome":"Sistema de Login com PHP","descricao":"","tecnologias":"PHP, MariaDB e CSS","link_github":"https://github.com/SantosLana/2026-DWII/blob/main/04_sessoes/login.php","ano":2026,"status":"publicado"},{"id":6,"nome":"Jogo da Velha (em construcao)","descricao":"Jogo da velha local - ainda em desenvolvimento.","tecnologias":"JavaScript, HTML","link_github":null,"ano":2026,"status":"rascunho"},{"id":5,"nome":"API de Clima","descricao":"Microsservico que consome uma API publica e devolve a previsao em JSON.","tecnologias":"PHP, REST","link_github":"https://github.com/usuario/clima","ano":2026,"status":"publicado"},{"id":4,"nome":"Loja Virtual (prototipo)","descricao":"Catalogo de produtos com carrinho e checkout simulado.","tecnologias":"PHP, MariaDB, JavaScript","link_github":"https://github.com/usuario/loja","ano":2024,"status":"publicado"},{"id":3,"nome":"App de Tarefas","descricao":"Lista de tarefas com categorias, prazos e filtro por status.","tecnologias":"JavaScript, HTML, CSS","link_github":"https://github.com/usuario/tarefas","ano":2025,"status":"publicado"},{"id":2,"nome":"Sistema de Biblioteca","descricao":"CRUD de acervo e emprestimos, com busca e relatorios.","tecnologias":"PHP, MariaDB, Bootstrap","link_github":"https://github.com/usuario/biblioteca","ano":2025,"status":"publicado"},{"id":1,"nome":"Portfolio Pessoal","descricao":"Site de portfolio responsivo com PHP, PDO e MariaDB, painel admin e login","tecnologias":"PHP, MariaDB, CSS, Git","link_github":"https://github.com/SantosLana/portfolio-angular/tree/main/portfolio-angular","ano":2026,"status":"publicado"}]
+
+## Cadastro sem token
+
+curl -i -X POST http://localhost:3000/api/projetos \
+  -H "Content-Type: application/json" \
+  -d '{"nome":"Projeto de teste","ano":2026}'
+
+HTTP/1.1 401 Unauthorized
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 24
+ETag: W/"18-7rngwg4P6dw1Zp7FDBOgtWmRdJQ"
+Date: Sun, 25 Oct 2026 18:21:04 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"erro":"Token ausente"}
+
+## Cadastro com token
+
+curl -i -X POST http://localhost:3000/api/projetos \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"nome":"Projeto de teste","ano":2026}'
+
+HTTP/1.1 201 Created
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 9
+ETag: W/"9-Bov/JVGw8IwZQdGfCVd7a9a8IPE"
+Date: Sun, 25 Oct 2026 18:21:13 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"id":21}
+
+## Atualização com token
+
+
+curl -i -X PUT http://localhost:3000/api/projetos/21 \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"nome":"Projeto atualizado","ano":2026}'
+
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 33
+ETag: W/"21-hGI5fkL1evS6riSP9aCFN0DB6Qw"
+Date: Sun, 25 Oct 2026 18:21:58 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"mensagem":"Projeto atualizado"}
+
+## Exclusão sem token
+
+curl -i -X DELETE http://localhost:3000/api/projetos/21
+
+HTTP/1.1 401 Unauthorized
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 24
+ETag: W/"18-7rngwg4P6dw1Zp7FDBOgtWmRdJQ"
+Date: Sun, 25 Oct 2026 18:22:06 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"erro":"Token ausente"}
+
+## Exclusão com token
+
+curl -i -X DELETE http://localhost:3000/api/projetos/21 \
+  -H "Authorization: Bearer $TOKEN"
+
+HTTP/1.1 204 No Content
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Date: Sun, 25 Oct 2026 18:22:20 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+## Token inválido
+
+curl -i http://localhost:3000/api/projetos/todos \
+  -H "Authorization: Bearer token-invalido"
+
+HTTP/1.1 401 Unauthorized
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 37
+ETag: W/"25-I4i3bqVGNsskZMPyfVmcfgEo8XQ"
+Date: Sun, 25 Oct 2026 17:47:08 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"erro":"Token invalido ou expirado"}
+
 
 
